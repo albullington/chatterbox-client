@@ -23,10 +23,27 @@
     <script src="scripts/app.js"></script>
   </head>
   <body>
-    <div id="main">
-      <h1>chatterbox</h1>
+
+    
+  <div id="main">
+    <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
+    <div class="spinner">
+      <!-- <img src="images/spiffygif_46x46.gif"> -->
     </div>
-    <div id="chats"></div>
+    <div id="rooms">
+      Room:
+      <select id="roomSelect">
+      </select>
+      <button class="getposts">Get Posts</button>
+    </div>
+<!--     <form action="#" id="send" method="post">
+ -->      <input type="text" name="message" id="message"/>
+      <input type="submit" name="submit" class="submit"/>
+<!--     </form>
+ -->    <div id="chats"></div>
+  </div>
+  
+  
   </body>
 </html>
