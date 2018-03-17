@@ -1,25 +1,24 @@
 // YOUR CODE HERE:
 
 var App = function() {
+  this.server = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages';
 };
 
 App.prototype.init = function() {
-  $(document).ready(function() {
-    
+  var context = this;
     $('.getposts').on('click', function() {
-      App.prototype.fetch('http://parse.sfm8.hackreactor.com/chatterbox/classes/messages');
+      context.fetch('http://parse.sfm8.hackreactor.com/chatterbox/classes/messages');
     });
-    
-    $('.submit').on('click', function() {
-      App.prototype.handleSubmit()
+
+    $('#send .submit').on('submit', function() {
+      context.handleSubmit();
     });
-  })
 };
 
 App.prototype.send = function(message) {
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
+    url: this.server,
     type: 'POST',
     data: JSON.stringify(message),
     contentType: 'application/json',
@@ -33,16 +32,16 @@ App.prototype.send = function(message) {
   });
 }
 
-App.prototype.fetch = function(url) {
+App.prototype.fetch = function() {
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: url,
+    url: this.server,
     type: 'GET',
     //data: 'data',
     //contentType: 'application/json',
     success: function (data) {
+      var messages = data.results;
       console.log('chatterbox: Message received');
-      return data;
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -57,7 +56,9 @@ App.prototype.clearMessages = function() {
 
 App.prototype.renderMessage = function(message) {
   $('#chats').append('<div class=' + message.username + ' ' + message.roomname + ' id="chat"></div>')
-  $('#chat').append('<span class =' + username + '>' + username + '</span>');
+  $('#chat').append('<span class =' + message.username + '>' + message.username + ': </span><br>');
+  $('#chat').append('<span class>' + message.text + '</span>');
+  this.handleUsernameClick();
 }
 
 App.prototype.renderRoom = function(room) {
@@ -67,16 +68,16 @@ App.prototype.renderRoom = function(room) {
 App.prototype.handleUsernameClick = function() {
 }
 
-App.prototype.handleSubmit = function(message) {
+App.prototype.handleSubmit = function() {
     var message = {
       username: 'test',
       text: $('#message').val(),
       roomname: 'test'
     }
-    console.log(message);
-    App.prototype.send(message);
+    this.send(message);
 }
 
 var app = new App();
-app.init();
-
+$(document).ready(function() {
+  app.init();
+})

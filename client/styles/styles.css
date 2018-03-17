@@ -5,7 +5,7 @@ body {
     font-family: arial, sans-serif;
 }
 
-#main, #chats {
+#main {
     width: 500px;
     margin: auto;
     text-align: left;
@@ -44,6 +44,16 @@ body {
     font-size: 12px;
     color: green;
     line-height: 13px;
+}
+
+#chats {
+    width: 350px;
+    margin: auto;
+    text-align: left;
+    background: #ddd;
+    padding: 50px 60px;
+    border: solid #ddd;
+    border-width: 1 1px 1px 1px;
 }
 
 form {
@@ -87,4 +97,3 @@ form input[type=text] {
     color: #fff;
     background-color: #0090da;
 }
-
