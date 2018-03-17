@@ -1,18 +1,33 @@
 // YOUR CODE HERE:
-
 var App = function() {
   this.server = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages';
+  this.time = new Date(0);
+  this.rooms = {};
 };
 
 App.prototype.init = function() {
   var context = this;
-    $('.getposts').on('click', function() {
-      context.fetch('http://parse.sfm8.hackreactor.com/chatterbox/classes/messages');
-    });
-
-    $('#send .submit').on('submit', function() {
+    context.fetch();
+    
+    $('.submit').on('click', function() {
+      console.log('test')
       context.handleSubmit();
     });
+    
+    $('.getposts').on('click', function() {
+      context.fetch();
+    })
+    
+    $('#roomSelect').on('change', function() {
+      var roomFilter = '.' + this.value;
+      console.log(roomFilter);
+      $('div').filter('#chat').hide();
+      $('div').filter(roomFilter).show();
+      //$('#chat').hide();
+      // $('#chat').filter(function() {
+      //   return $('.test')}).show();
+      
+    })
 };
 
 App.prototype.send = function(message) {
@@ -23,6 +38,7 @@ App.prototype.send = function(message) {
     data: JSON.stringify(message),
     contentType: 'application/json',
     success: function (data) {
+      console.log('message', data);
       console.log('chatterbox: Message sent');
     },
     error: function (data) {
@@ -33,14 +49,30 @@ App.prototype.send = function(message) {
 }
 
 App.prototype.fetch = function() {
+  var context = this;
+  
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
     url: this.server,
     type: 'GET',
-    //data: 'data',
-    //contentType: 'application/json',
+    // contentType: 'application/json; charset=utf-8',
+    data: {'order': '-createdAt'},
+    // dataType: 'application/json',
     success: function (data) {
       var messages = data.results;
+      // sort on createdAt
+      for (var i = messages.length - 1; i > 0; i--) {
+        var currentDate = new Date(messages[i]['createdAt']);
+        if (currentDate > context.time) {
+          context.renderMessage(messages[i]);
+        }
+        
+        if (!(messages[i]['roomname'] in context.rooms)) {
+          context.rooms[messages[i]['roomname']] = messages[i]['roomname'];
+          context.renderRoom(messages[i]['roomname']);
+        }
+      }
+      context.time = new Date(messages[0]['createdAt']);
       console.log('chatterbox: Message received');
     },
     error: function (data) {
@@ -55,29 +87,31 @@ App.prototype.clearMessages = function() {
 }
 
 App.prototype.renderMessage = function(message) {
-  $('#chats').append('<div class=' + message.username + ' ' + message.roomname + ' id="chat"></div>')
-  $('#chat').append('<span class =' + message.username + '>' + message.username + ': </span><br>');
-  $('#chat').append('<span class>' + message.text + '</span>');
+  var context = this;
+  $('#chats').prepend('<div class="' + encodeURIComponent(message.username) + ' ' + message.roomname + '" id="chat"><span class>' + _.escape(message.username) + ': ' + _.escape(message.text) + '</span></div>')
   this.handleUsernameClick();
 }
 
 App.prototype.renderRoom = function(room) {
-  $('#roomSelect').append('<option value=' + room + '>' + room + '</option>')
+  $('#roomSelect').append('<option value=' + room + '>' + _.escape(room) + '</option>')
 }
 
 App.prototype.handleUsernameClick = function() {
+  console.log('test')
 }
 
 App.prototype.handleSubmit = function() {
+  var context = this;
     var message = {
-      username: 'test',
+      username: window.location.search.slice(10),
       text: $('#message').val(),
-      roomname: 'test'
+      roomname: $('#roomSelect').val()
     }
-    this.send(message);
+  context.send(message);
 }
 
 var app = new App();
 $(document).ready(function() {
+
   app.init();
 })

@@ -53,7 +53,15 @@ body {
     background: #ddd;
     padding: 50px 60px;
     border: solid #ddd;
-    border-width: 1 1px 1px 1px;
+    border-width: 1px 1px 1px 1px;
+}
+
+#chat {
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: #eee;
+    border: solid white;
+    border-width: 1px 1px 1px 1px;
 }
 
 form {
@@ -67,12 +75,6 @@ form input[type=text] {
     width: 70%;
     font-size: 12px;
     padding: 5px;
-}
-
-.chat {
-    padding: 5px;
-    margin-bottom: 5px;
-    background-color: #eee;
 }
 
 .chat .username {
